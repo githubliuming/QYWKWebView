@@ -15,6 +15,8 @@
 		8A574D6D20D0E4440039AEC1 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 8A574D6B20D0E4440039AEC1 /* LaunchScreen.storyboard */; };
 		8A574D7020D0E4440039AEC1 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 8A574D6F20D0E4440039AEC1 /* main.m */; };
 		8A574D7820D0E46D0039AEC1 /* WebKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8A574D7720D0E46D0039AEC1 /* WebKit.framework */; };
+		8A95A6BE20DB9A3600BA1585 /* JavaScriptCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8A95A6BD20DB9A3600BA1585 /* JavaScriptCore.framework */; };
+		8A95A6C020DBB5D200BA1585 /* AjaxHandler.js in Resources */ = {isa = PBXBuildFile; fileRef = 8A95A6BF20DBB5D200BA1585 /* AjaxHandler.js */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -31,6 +33,8 @@
 		8A574D6E20D0E4440039AEC1 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		8A574D6F20D0E4440039AEC1 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		8A574D7720D0E46D0039AEC1 /* WebKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = WebKit.framework; path = System/Library/Frameworks/WebKit.framework; sourceTree = SDKROOT; };
+		8A95A6BD20DB9A3600BA1585 /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = System/Library/Frameworks/JavaScriptCore.framework; sourceTree = SDKROOT; };
+		8A95A6BF20DBB5D200BA1585 /* AjaxHandler.js */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.javascript; path = AjaxHandler.js; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -38,6 +42,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				8A95A6BE20DB9A3600BA1585 /* JavaScriptCore.framework in Frameworks */,
 				8A574D7820D0E46D0039AEC1 /* WebKit.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -65,6 +70,7 @@
 		8A574D5F20D0E4440039AEC1 /* QYWKWebView */ = {
 			isa = PBXGroup;
 			children = (
+				8A95A6BF20DBB5D200BA1585 /* AjaxHandler.js */,
 				4754795C20DA99670079234E /* NCChineseConverter.h */,
 				4754795D20DA99670079234E /* NCChineseConverter.m */,
 				8A574D6020D0E4440039AEC1 /* AppDelegate.h */,
@@ -83,6 +89,7 @@
 		8A574D7620D0E46D0039AEC1 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				8A95A6BD20DB9A3600BA1585 /* JavaScriptCore.framework */,
 				8A574D7720D0E46D0039AEC1 /* WebKit.framework */,
 			);
 			name = Frameworks;
@@ -119,7 +126,7 @@
 				TargetAttributes = {
 					8A574D5C20D0E4440039AEC1 = {
 						CreatedOnToolsVersion = 9.2;
-						ProvisioningStyle = Automatic;
+						ProvisioningStyle = Manual;
 					};
 				};
 			};
@@ -149,6 +156,7 @@
 				8A574D6D20D0E4440039AEC1 /* LaunchScreen.storyboard in Resources */,
 				8A574D6A20D0E4440039AEC1 /* Assets.xcassets in Resources */,
 				8A574D6820D0E4440039AEC1 /* Main.storyboard in Resources */,
+				8A95A6C020DBB5D200BA1585 /* AjaxHandler.js in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -297,15 +305,15 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
-				CODE_SIGN_STYLE = Automatic;
-				DEVELOPMENT_TEAM = WJYBVW342N;
+				CODE_SIGN_STYLE = Manual;
+				DEVELOPMENT_TEAM = FJV2B9GPDW;
 				INFOPLIST_FILE = QYWKWebView/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = com.liuming.QYGPUDemo;
+				PRODUCT_BUNDLE_IDENTIFIER = com.yoyoshijie.philm;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE = "";
-				PROVISIONING_PROFILE_SPECIFIER = "";
+				PROVISIONING_PROFILE = "3aeacfd8-cfac-4028-a7e1-75912749ac2d";
+				PROVISIONING_PROFILE_SPECIFIER = com.yoyoshijie.philm.beta;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Debug;
@@ -315,15 +323,15 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
-				CODE_SIGN_STYLE = Automatic;
-				DEVELOPMENT_TEAM = WJYBVW342N;
+				CODE_SIGN_STYLE = Manual;
+				DEVELOPMENT_TEAM = FJV2B9GPDW;
 				INFOPLIST_FILE = QYWKWebView/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = com.liuming.QYGPUDemo;
+				PRODUCT_BUNDLE_IDENTIFIER = com.yoyoshijie.philm;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE = "";
-				PROVISIONING_PROFILE_SPECIFIER = "";
+				PROVISIONING_PROFILE = "3aeacfd8-cfac-4028-a7e1-75912749ac2d";
+				PROVISIONING_PROFILE_SPECIFIER = com.yoyoshijie.philm.beta;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Release;

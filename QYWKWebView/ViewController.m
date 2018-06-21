@@ -9,12 +9,19 @@
 #import "ViewController.h"
 #import <WebKit/WebKit.h>
 #import "NCChineseConverter.h"
+
+#define KRedirectUrlToGamePage @"KRedirectUrlToGamePage"
+#define KWebUrlLoadCompleted   @"KWebUrlLoadCompleted"
 @interface ViewController ()<WKUIDelegate, WKNavigationDelegate,WKScriptMessageHandler>
 @property(nonatomic, strong) WKWebView *webView;
 @property(nonatomic, strong) WKNavigation *navigation;
 
 @property(nonatomic, strong)NSString * teamA;
 @property(nonatomic,strong) NSString * treamB;
+
+@property(nonatomic,assign)BOOL isLoadingGameUrl;
+
+@property(nonatomic,assign)BOOL allowNewPage;
 @end
 
 @implementation ViewController
@@ -29,10 +36,11 @@
     self.webView.UIDelegate = self;
     self.webView.navigationDelegate = self;
     [self.view addSubview:self.webView];
+    self.allowNewPage = YES;
     
-    self.teamA = @"卡芬堡";
-    self.treamB = @"維迪奧頓FC";
-
+    self.teamA = @"Ha Noi FC II";
+    self.treamB = @"多樂";
+    
     //https://mobile.7788365365.com/#type=InPlay;key=;ip=1;lng=2   https://www.baidu.com
     NSURLRequest *requst = [NSURLRequest requestWithURL:[NSURL URLWithString:@"https://mobile.7788365365.com/#type=InPlay;key=;ip=1;lng=2"]];
     self.navigation = [self.webView loadRequest:requst];
@@ -89,10 +97,7 @@
                     decisionHandler:(void (^)(WKNavigationActionPolicy))decisionHandler
 {
     NSLog(@"open url %@", navigationAction.request.URL.absoluteString);
-    //允许跳转
     decisionHandler(WKNavigationActionPolicyAllow);
-    //不允许跳转
-    // decisionHandler(WKNavigationActionPolicyCancel);
 }
 
 // 在收到响应后，决定是否跳转
@@ -108,16 +113,43 @@
 }
 
 //页面开始加载时调用
-- (void)webView:(WKWebView *)webView didStartProvisionalNavigation:(null_unspecified WKNavigation *)navigation {
+- (void)webView:(WKWebView *)webView didStartProvisionalNavigation:(null_unspecified WKNavigation *)navigation
+{
+    NSLog(@"webView start load webUrl");
 }
 //// 当内容开始返回时调用
-- (void)webView:(WKWebView *)webView didCommitNavigation:(null_unspecified WKNavigation *)navigation {}
+- (void)webView:(WKWebView *)webView didCommitNavigation:(null_unspecified WKNavigation *)navigation
+{
+    
+    NSLog(@"webView commit webUrl");
+}
 // 页面加载完成之后调用
 - (void)webView:(WKWebView *)webView didFinishNavigation:(null_unspecified WKNavigation *)navigation {
     
     NSLog(@"网页完全加载好");
-//    [self searchMatch];
-    [self performSelector:@selector(searchMatch) withObject:nil afterDelay:10.0f];
+//    if (!webView.isLoading)
+//    {
+//        [webView evaluateJavaScript:@"document.readyState" completionHandler:^(id _Nullable result, NSError * _Nullable error) {
+//            if ([((NSString *)result) isEqualToString:@"complete"])
+//            {
+//
+//            }
+//        }];
+//    }
+//    else
+//    {
+//        NSString * jsString =
+//        @"window.onload = function() {"
+//        @"    xfNewsContext.onload();"
+//        @"};"
+//        @"document.onreadystatechange = function () {"
+//        @"    if (document.readyState == \"complete\") {"
+//        @"        xfNewsContext.documentReadyStateComplete();"
+//    @"window.webkit.messageHandlers.webKitTest.postMessage({'name':'KWebUrlLoadCompleted'});"
+//        @"    }"
+//        @"};";
+//        [self.webView evaluateJavaScript:jsString completionHandler:nil];
+//    }
 }
 //页面加载完成之后调用
 - (void)webView:(WKWebView *)webView
@@ -152,7 +184,28 @@
 #pragma mark - WKScriptMessageHandler
 - (void)userContentController:(WKUserContentController *)userContentController didReceiveScriptMessage:(WKScriptMessage *)message{
     
-    NSLog(@"receive script message %@",[message description]);
+    NSLog(@"receive script message name = %@ body = %@",message.name,message.body);
+    
+    if ([message.name isEqualToString:@"callbackHandler"])
+    {
+        NSArray * array = [[NSArray alloc] initWithArray:message.body];
+        if ([[array firstObject] isEqualToString:@"siteready"])
+        {
+            [self performSelector:@selector(searchMatch) withObject:nil afterDelay:2];
+        }
+    }
+    else
+    {
+     
+        NSDictionary * bodyDic = [[NSDictionary alloc] initWithDictionary:message.body];
+        NSString * bodyName = bodyDic[@"name"];
+        if ([bodyName isEqualToString:KRedirectUrlToGamePage])
+        {
+            self.isLoadingGameUrl = YES;
+            
+            [self performSelector:@selector(hidView) withObject:nil afterDelay:1];
+        }
+    }
 }
 #pragma mark -配置webConfig
 - (WKWebViewConfiguration *)webConfiguration
@@ -161,7 +214,7 @@
     config.preferences = [[WKPreferences alloc] init];
     config.processPool = [[WKProcessPool alloc] init];
     config.userContentController = [[WKUserContentController alloc] init];
-    [config.userContentController addScriptMessageHandler:self name:@"hello work"];
+    [config.userContentController addScriptMessageHandler:self name:@"webKitTest"];
     [self addHelloWorldAlertScript:config.userContentController];
     return config;
 }
@@ -173,6 +226,11 @@
         WKUserScript * userScript = [[WKUserScript alloc] initWithSource:@"alert('hello world')" injectionTime:WKUserScriptInjectionTimeAtDocumentEnd forMainFrameOnly:YES];
         
         [userContentController addUserScript:userScript];
+        
+        NSString *jsHandler = [NSString stringWithContentsOfURL:[[NSBundle mainBundle]URLForResource:@"AjaxHandler" withExtension:@"js"] encoding:NSUTF8StringEncoding error:NULL];
+        WKUserScript *ajaxHandler = [[WKUserScript alloc]initWithSource:jsHandler injectionTime:WKUserScriptInjectionTimeAtDocumentEnd forMainFrameOnly:NO];
+        [userContentController addScriptMessageHandler:self name:@"callbackHandler"];
+        [userContentController addUserScript:ajaxHandler];
     }
 }
 
@@ -188,7 +246,6 @@
 - (void)dealloc
 {
     [self.webView removeObserver:self forKeyPath:@"estimatedProgress"];
-    
 }
 
 
@@ -224,10 +281,11 @@
                             "{"
                             "alert('%@');"
                             "doingmatch[i*2].click();"
+                            "window.webkit.messageHandlers.webKitTest.postMessage({'name':'KRedirectUrlToGamePage'});"
                             "res='ok';"
                             "return res;"
                             "} else {alert( temp_a + '||' +  temp_b)}"
-                            "}} postStr();",team_a,team_b,[NSString stringWithFormat:@"%@v%@直播比赛正常解析正常",team_a,team_b]];
+                            "} return 'unfind'} postStr();",team_a,team_b,[NSString stringWithFormat:@"%@v%@直播比赛正常解析正常",team_a,team_b]];
     
     
 //    NSLog(@"searchCode:\n%@",searchCode);
@@ -235,20 +293,12 @@
     [self.webView evaluateJavaScript:searchCode completionHandler:^(id _Nullable result, NSError * _Nullable error) {
         
         NSLog(@"result = %@",result);
-        [self hidView];
+        
     }];
-//    NSLog(@"res: %@",res);
-//    if([res isEqualToString:@"ok"])
-//    {
-    
-//        [self performSelector:@selector(hidView) withObject:nil afterDelay:5.0f];
-//    }
-    
-    
-    
 }
 
 
+//打开第二个页面
 - (void)hidView
 {
     
@@ -262,24 +312,10 @@
         
         [self.webView evaluateJavaScript:@"document.body.offsetHeight;" completionHandler:^(id _Nullable height, NSError * _Nullable error) {
             
-                NSLog(@"heightheightheightheight %d",[height integerValue]);
                 NSString* javascript = [NSString stringWithFormat:@"window.scrollBy(0, %ld);", [height integerValue]];
-//                [locationWebView stringByEvaluatingJavaScriptFromString:javascript];
             [self.webView evaluateJavaScript:javascript completionHandler:^(id _Nullable resutl, NSError * _Nullable error) {
-                
-                
             }];
         }];
     }];
-//    [locationWebView stringByEvaluatingJavaScriptFromString:hiddenCode];
-    
-    //向上移动球场
-//    NSInteger height = [[locationWebView stringByEvaluatingJavaScriptFromString:@"document.body.offsetHeight;"] intValue];
-//    NSLog(@"heightheightheightheight %d",height);
-//    NSString* javascript = [NSString stringWithFormat:@"window.scrollBy(0, %ld);", height];
-//    [locationWebView stringByEvaluatingJavaScriptFromString:javascript];
-//
-//    [_loadingView removeFromSuperview];
-    
 }
 @end
