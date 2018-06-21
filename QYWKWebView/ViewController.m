@@ -9,7 +9,6 @@
 #import "ViewController.h"
 #import <WebKit/WebKit.h>
 #import "NCChineseConverter.h"
-
 #define KRedirectUrlToGamePage @"KRedirectUrlToGamePage"
 #define KWebUrlLoadCompleted   @"KWebUrlLoadCompleted"
 @interface ViewController ()<WKUIDelegate, WKNavigationDelegate,WKScriptMessageHandler>
@@ -22,6 +21,7 @@
 @property(nonatomic,assign)BOOL isLoadingGameUrl;
 
 @property(nonatomic,assign)BOOL allowNewPage;
+
 @end
 
 @implementation ViewController
@@ -38,8 +38,8 @@
     [self.view addSubview:self.webView];
     self.allowNewPage = YES;
     
-    self.teamA = @"Ha Noi FC II";
-    self.treamB = @"多樂";
+    self.teamA = @"法国";
+    self.treamB = @"秘魯";
     
     //https://mobile.7788365365.com/#type=InPlay;key=;ip=1;lng=2   https://www.baidu.com
     NSURLRequest *requst = [NSURLRequest requestWithURL:[NSURL URLWithString:@"https://mobile.7788365365.com/#type=InPlay;key=;ip=1;lng=2"]];
@@ -127,29 +127,7 @@
 - (void)webView:(WKWebView *)webView didFinishNavigation:(null_unspecified WKNavigation *)navigation {
     
     NSLog(@"网页完全加载好");
-//    if (!webView.isLoading)
-//    {
-//        [webView evaluateJavaScript:@"document.readyState" completionHandler:^(id _Nullable result, NSError * _Nullable error) {
-//            if ([((NSString *)result) isEqualToString:@"complete"])
-//            {
-//
-//            }
-//        }];
-//    }
-//    else
-//    {
-//        NSString * jsString =
-//        @"window.onload = function() {"
-//        @"    xfNewsContext.onload();"
-//        @"};"
-//        @"document.onreadystatechange = function () {"
-//        @"    if (document.readyState == \"complete\") {"
-//        @"        xfNewsContext.documentReadyStateComplete();"
-//    @"window.webkit.messageHandlers.webKitTest.postMessage({'name':'KWebUrlLoadCompleted'});"
-//        @"    }"
-//        @"};";
-//        [self.webView evaluateJavaScript:jsString completionHandler:nil];
-//    }
+    [self testPageLoadFinish];
 }
 //页面加载完成之后调用
 - (void)webView:(WKWebView *)webView
@@ -191,7 +169,8 @@
         NSArray * array = [[NSArray alloc] initWithArray:message.body];
         if ([[array firstObject] isEqualToString:@"siteready"])
         {
-            [self performSelector:@selector(searchMatch) withObject:nil afterDelay:2];
+//            [self performSelector:@selector(searchMatch) withObject:nil afterDelay:2];
+            
         }
     }
     else
@@ -317,5 +296,63 @@
             }];
         }];
     }];
+    
+}
+
+- (void)testPageLoadFinish
+{
+    NSString * js = @"function test (){var display =$('#preLoadOuter').css('display'); if(display == 'none'){return 'OK' } return 'NO'}; test()";
+    [self.webView evaluateJavaScript:js completionHandler:^(id _Nullable result, NSError * _Nullable error) {
+        if (error)
+        {
+            NSLog(@"error = %@",[error userInfo]);
+        }
+        else
+        {
+            NSLog(@"testPageLoadFinish = %@",result);
+            if ([[result uppercaseString] isEqualToString:@"OK"])
+            {
+
+//                [self performSelector:@selector(searchMatch) withObject:nil afterDelay:1.0f];
+                [self testLoadViewExist];
+            }
+            else if([[result uppercaseString] isEqualToString:@"NO"])
+            {
+
+                [self performSelector:@selector(testPageLoadFinish) withObject:nil afterDelay:0.5];
+
+            }
+        }
+
+    }];
+}
+
+- (void)testLoadViewExist
+{
+    //if(e == 'none'){return 'NO' } return 'OK'};
+    NSString * js = @"function test2 (){var e =$('.g5-5pinner_Image');if(e.length > 0){return 'OK';} return 'NO'}  test2()";
+    [self.webView evaluateJavaScript:js completionHandler:^(id _Nullable result, NSError * _Nullable error) {
+        
+        if (error)
+        {
+            NSLog(@"error = %@",[error userInfo]);
+        }
+        else
+        {
+            NSLog(@"testLoadViewExist = %@",result);
+            if ([[result uppercaseString] isEqualToString:@"OK"])
+            {
+                 [self performSelector:@selector(testLoadViewExist) withObject:nil afterDelay:0.5];
+              
+            }
+            else if([[result uppercaseString] isEqualToString:@"NO"])
+            {
+                NSLog(@"kkkkkkkkkkkkkkk");
+                [self performSelector:@selector(searchMatch) withObject:nil afterDelay:2];
+                
+            }
+        }
+    }];
+    
 }
 @end

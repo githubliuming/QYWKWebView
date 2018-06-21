@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		4740A23A20DBDCEF00478212 /* QYWebViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 4740A23920DBDCEF00478212 /* QYWebViewController.m */; };
 		4754795E20DA99680079234E /* NCChineseConverter.m in Sources */ = {isa = PBXBuildFile; fileRef = 4754795D20DA99670079234E /* NCChineseConverter.m */; };
 		8A574D6220D0E4440039AEC1 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 8A574D6120D0E4440039AEC1 /* AppDelegate.m */; };
 		8A574D6520D0E4440039AEC1 /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 8A574D6420D0E4440039AEC1 /* ViewController.m */; };
@@ -20,6 +21,8 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		4740A23820DBDCEF00478212 /* QYWebViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = QYWebViewController.h; sourceTree = "<group>"; };
+		4740A23920DBDCEF00478212 /* QYWebViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QYWebViewController.m; sourceTree = "<group>"; };
 		4754795C20DA99670079234E /* NCChineseConverter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NCChineseConverter.h; sourceTree = "<group>"; };
 		4754795D20DA99670079234E /* NCChineseConverter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NCChineseConverter.m; sourceTree = "<group>"; };
 		8A574D5D20D0E4440039AEC1 /* QYWKWebView.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = QYWKWebView.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -70,6 +73,8 @@
 		8A574D5F20D0E4440039AEC1 /* QYWKWebView */ = {
 			isa = PBXGroup;
 			children = (
+				4740A23820DBDCEF00478212 /* QYWebViewController.h */,
+				4740A23920DBDCEF00478212 /* QYWebViewController.m */,
 				8A95A6BF20DBB5D200BA1585 /* AjaxHandler.js */,
 				4754795C20DA99670079234E /* NCChineseConverter.h */,
 				4754795D20DA99670079234E /* NCChineseConverter.m */,
@@ -126,7 +131,7 @@
 				TargetAttributes = {
 					8A574D5C20D0E4440039AEC1 = {
 						CreatedOnToolsVersion = 9.2;
-						ProvisioningStyle = Manual;
+						ProvisioningStyle = Automatic;
 					};
 				};
 			};
@@ -171,6 +176,7 @@
 				8A574D7020D0E4440039AEC1 /* main.m in Sources */,
 				8A574D6220D0E4440039AEC1 /* AppDelegate.m in Sources */,
 				4754795E20DA99680079234E /* NCChineseConverter.m in Sources */,
+				4740A23A20DBDCEF00478212 /* QYWebViewController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -305,15 +311,15 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
-				CODE_SIGN_STYLE = Manual;
-				DEVELOPMENT_TEAM = FJV2B9GPDW;
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = WJYBVW342N;
 				INFOPLIST_FILE = QYWKWebView/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = com.yoyoshijie.philm;
+				PRODUCT_BUNDLE_IDENTIFIER = com.liuming.QYGPUDemo;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE = "3aeacfd8-cfac-4028-a7e1-75912749ac2d";
-				PROVISIONING_PROFILE_SPECIFIER = com.yoyoshijie.philm.beta;
+				PROVISIONING_PROFILE = "";
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Debug;
@@ -323,15 +329,15 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
-				CODE_SIGN_STYLE = Manual;
-				DEVELOPMENT_TEAM = FJV2B9GPDW;
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = WJYBVW342N;
 				INFOPLIST_FILE = QYWKWebView/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = com.yoyoshijie.philm;
+				PRODUCT_BUNDLE_IDENTIFIER = com.liuming.QYGPUDemo;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE = "3aeacfd8-cfac-4028-a7e1-75912749ac2d";
-				PROVISIONING_PROFILE_SPECIFIER = com.yoyoshijie.philm.beta;
+				PROVISIONING_PROFILE = "";
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Release;
