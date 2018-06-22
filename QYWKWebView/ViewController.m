@@ -38,8 +38,8 @@
     [self.view addSubview:self.webView];
     self.allowNewPage = YES;
     
-    self.teamA = @"法国";
-    self.treamB = @"秘魯";
+    self.teamA = @"Guizhou Senhang 19歲以下";
+    self.treamB = @"Qingdao Eagles 19歲以下";
     
     //https://mobile.7788365365.com/#type=InPlay;key=;ip=1;lng=2   https://www.baidu.com
     NSURLRequest *requst = [NSURLRequest requestWithURL:[NSURL URLWithString:@"https://mobile.7788365365.com/#type=InPlay;key=;ip=1;lng=2"]];
@@ -164,25 +164,13 @@
     
     NSLog(@"receive script message name = %@ body = %@",message.name,message.body);
     
-    if ([message.name isEqualToString:@"callbackHandler"])
+    if (![message.name isEqualToString:@"callbackHandler"])
     {
-        NSArray * array = [[NSArray alloc] initWithArray:message.body];
-        if ([[array firstObject] isEqualToString:@"siteready"])
-        {
-//            [self performSelector:@selector(searchMatch) withObject:nil afterDelay:2];
-            
-        }
-    }
-    else
-    {
-     
         NSDictionary * bodyDic = [[NSDictionary alloc] initWithDictionary:message.body];
         NSString * bodyName = bodyDic[@"name"];
         if ([bodyName isEqualToString:KRedirectUrlToGamePage])
         {
-            self.isLoadingGameUrl = YES;
-            
-            [self performSelector:@selector(hidView) withObject:nil afterDelay:1];
+            [self testGameContextView];
         }
     }
 }
@@ -265,10 +253,6 @@
                             "return res;"
                             "} else {alert( temp_a + '||' +  temp_b)}"
                             "} return 'unfind'} postStr();",team_a,team_b,[NSString stringWithFormat:@"%@v%@直播比赛正常解析正常",team_a,team_b]];
-    
-    
-//    NSLog(@"searchCode:\n%@",searchCode);
-    
     [self.webView evaluateJavaScript:searchCode completionHandler:^(id _Nullable result, NSError * _Nullable error) {
         
         NSLog(@"result = %@",result);
@@ -277,12 +261,36 @@
 }
 
 
+- (void)testGameContextView
+{
+    NSString * js = @"function test3 (){var svg =$('.ip-MatchLiveContainer'); if(svg.length > 0){return 'OK';} return 'NO'}  test3()";
+    [self.webView evaluateJavaScript:js completionHandler:^(id _Nullable result, NSError * _Nullable error) {
+        
+        if (error)
+        {
+            NSLog(@"error = %@",[error userInfo]);
+        }
+        else
+        {
+            NSLog(@"testGameContextView = %@",result);
+            if ([[result uppercaseString] isEqualToString:@"OK"])
+            {
+                NSLog(@"lllllllllllllllllll");
+                [self hidView];
+            }
+            else if([[result uppercaseString] isEqualToString:@"NO"])
+            {
+                [self performSelector:@selector(testGameContextView) withObject:nil afterDelay:0.5];
+                
+            }
+        }
+    }];
+    
+}
 //打开第二个页面
 - (void)hidView
 {
-    
-//    locationWebView.frame =CGRectMake(0, 0, self.frame.size.width, self.frame.size.height);
-    
+
     NSString * hiddenCode = @"$('#FooterContainer,.ml1-MatchLiveSoccerModule_LocationsMenuConstrainerNarrow,.g5-HorizontalScroller_HScroll,.ipe-EventViewTitle,.v5,.MarketGrid,.ipe-MarketGrid_Classification-1,.hm-HeaderPod_Nav ,.state-LoggedOut,.hm-HeaderModule_Narrow,.hm-HeaderModule ,.ml1-ModalController_Icon,.ml1-ModalController_Icon-Summary,.ml1-ModalController_Icon,.ml1-ModalController_Icon-Table ').hide();";
     
     NSLog(@"隐藏元素\n %@",hiddenCode);
@@ -290,15 +298,12 @@
     [self.webView evaluateJavaScript:hiddenCode completionHandler:^(id _Nullable result, NSError * _Nullable error) {
         
         [self.webView evaluateJavaScript:@"document.body.offsetHeight;" completionHandler:^(id _Nullable height, NSError * _Nullable error) {
-            
                 NSString* javascript = [NSString stringWithFormat:@"window.scrollBy(0, %ld);", [height integerValue]];
             [self.webView evaluateJavaScript:javascript completionHandler:^(id _Nullable resutl, NSError * _Nullable error) {
             }];
         }];
     }];
-    
 }
-
 - (void)testPageLoadFinish
 {
     NSString * js = @"function test (){var display =$('#preLoadOuter').css('display'); if(display == 'none'){return 'OK' } return 'NO'}; test()";
@@ -313,8 +318,7 @@
             if ([[result uppercaseString] isEqualToString:@"OK"])
             {
 
-//                [self performSelector:@selector(searchMatch) withObject:nil afterDelay:1.0f];
-                [self testLoadViewExist];
+                [self performSelector:@selector(testLoadViewExist) withObject:nil afterDelay:0.3];
             }
             else if([[result uppercaseString] isEqualToString:@"NO"])
             {
@@ -329,10 +333,10 @@
 
 - (void)testLoadViewExist
 {
-    //if(e == 'none'){return 'NO' } return 'OK'};
-    NSString * js = @"function test2 (){var e =$('.g5-5pinner_Image');if(e.length > 0){return 'OK';} return 'NO'}  test2()";
-    [self.webView evaluateJavaScript:js completionHandler:^(id _Nullable result, NSError * _Nullable error) {
-        
+    //ipo-Fixture_CompetitorName ipo-CompetitionBase
+    NSString * js = @"function test2 (){var e =$('.ipo-Fixture_CompetitorName');if(e.length > 0){return 'OK';} return 'NO'}  test2()";
+    [self.webView evaluateJavaScript:js completionHandler:^(id _Nullable result, NSError * _Nullable error)
+    {
         if (error)
         {
             NSLog(@"error = %@",[error userInfo]);
@@ -342,17 +346,14 @@
             NSLog(@"testLoadViewExist = %@",result);
             if ([[result uppercaseString] isEqualToString:@"OK"])
             {
-                 [self performSelector:@selector(testLoadViewExist) withObject:nil afterDelay:0.5];
-              
+                NSLog(@"kkkkkkkkkkkkkkk");
+                [self searchMatch];
             }
             else if([[result uppercaseString] isEqualToString:@"NO"])
             {
-                NSLog(@"kkkkkkkkkkkkkkk");
-                [self performSelector:@selector(searchMatch) withObject:nil afterDelay:2];
-                
+                [self performSelector:@selector(testLoadViewExist) withObject:nil afterDelay:0.5];
             }
         }
     }];
-    
 }
 @end
