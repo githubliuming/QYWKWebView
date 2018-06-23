@@ -38,8 +38,8 @@
     [self.view addSubview:self.webView];
     self.allowNewPage = YES;
     
-    self.teamA = @"Guizhou Senhang 19歲以下";
-    self.treamB = @"Qingdao Eagles 19歲以下";
+    self.teamA = @"尼日利亞";
+    self.treamB = @"冰島";
     
     //https://mobile.7788365365.com/#type=InPlay;key=;ip=1;lng=2   https://www.baidu.com
     NSURLRequest *requst = [NSURLRequest requestWithURL:[NSURL URLWithString:@"https://mobile.7788365365.com/#type=InPlay;key=;ip=1;lng=2"]];

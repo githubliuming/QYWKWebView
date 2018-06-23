@@ -9,6 +9,9 @@
 #import "QYWebViewController.h"
 #import "NCChineseConverter.h"
 #import <JavaScriptCore/JavaScriptCore.h>
+#define KLoadDataForSearchGame  @"KLoadDataForSearchGame"
+#define KLoadGameSVGView    @"KWillLoadGameSVGView"
+#define KLoadGameFinsh          @"KLoadGameFinsh"
 @interface QYWebViewController ()<UIWebViewDelegate>
 {
      UIWebView * locationWebView;
@@ -32,8 +35,8 @@
     NSURLRequest *requst = [NSURLRequest requestWithURL:[NSURL URLWithString:@"https://mobile.7788365365.com/#type=InPlay;key=;ip=1;lng=2"]];
      [locationWebView loadRequest:requst];
     
-    self.teamA = @"特蘭斯邁 後備隊";
-    self.treamB = @"魚雷明斯克 後備隊";
+    self.teamA = @"尼日利亞";
+    self.treamB = @"冰島";
     
     
 }
@@ -42,17 +45,7 @@
 {
     NSString *title = [webView stringByEvaluatingJavaScriptFromString:@"document.title"];
     NSLog(@"title %@",title);
-    
-     self.context = [webView valueForKeyPath:@"documentView.webView.mainFrame.javaScriptContext"];
-    //注入JS需要的“OC”对象
-    self.context[@"OC"] = self;
-    
-    JSValue * function = self.context[@"ns_moblib_util.IOSAppUtility.Instance.handlers.appInitCallback"];
-    self.context[@"ns_moblib_util.IOSAppUtility.Instance.handlers.appInitCallback"] = ^(void){
-        
-        [function callWithArguments:nil];
-        
-    };
+    [self testLoadViewExist];
 }
 
 - (void)webViewDidStartLoad:(UIWebView *)webView {}
@@ -95,22 +88,32 @@
                             "}"
                             "} return 'unfind'} postStr();",team_a,team_b,[NSString stringWithFormat:@"%@v%@直播比赛正常解析正常",team_a,team_b]];
     
-    // else {alert( temp_a + '||' +  temp_b)}
-    //    NSLog(@"searchCode:\n%@",searchCode);
-    
-//    [self.webView evaluateJavaScript:searchCode completionHandler:^(id _Nullable result, NSError * _Nullable error) {
-//
-//        NSLog(@"result = %@",result);
-//
-//    }];
     NSString * res =  [locationWebView stringByEvaluatingJavaScriptFromString:searchCode];
     NSLog(@"res: %@",res);
     if([res isEqualToString:@"ok"])
     {
-        [self performSelector:@selector(hidView) withObject:nil afterDelay:1.0f];
+        [self testGameContextView];
+    }
+    else
+    {
+        NSLog(@"未找到比赛");
     }
 }
-
+- (void)testGameContextView
+{
+    NSString * js = @"function test3 (){var svg =$('.ip-MatchLiveContainer'); if(svg.length > 0){return 'OK';} return 'NO'}  test3()";
+    
+    NSString * result = [locationWebView stringByEvaluatingJavaScriptFromString:js];
+    if ([[result uppercaseString] isEqualToString:@"OK"])
+    {
+        [self hidView];
+    }
+    else if([[result uppercaseString] isEqualToString:@"NO"])
+    {
+        [self performSelector:@selector(testGameContextView) withObject:nil afterDelay:1/30.f];
+        
+    }
+}
 
 //打开第二个页面
 - (void)hidView
@@ -121,31 +124,25 @@
     NSString * hiddenCode = @"$('#FooterContainer,.ml1-MatchLiveSoccerModule_LocationsMenuConstrainerNarrow,.g5-HorizontalScroller_HScroll,.ipe-EventViewTitle,.v5,.MarketGrid,.ipe-MarketGrid_Classification-1,.hm-HeaderPod_Nav ,.state-LoggedOut,.hm-HeaderModule_Narrow,.hm-HeaderModule ,.ml1-ModalController_Icon,.ml1-ModalController_Icon-Summary,.ml1-ModalController_Icon,.ml1-ModalController_Icon-Table ').hide();";
     
     NSLog(@"隐藏元素\n %@",hiddenCode);
-    
+    [locationWebView stringByEvaluatingJavaScriptFromString:hiddenCode];
     NSInteger height = [[locationWebView stringByEvaluatingJavaScriptFromString:@"document.body.offsetHeight;"] intValue];
     NSLog(@"heightheightheightheight %d",height);
     NSString* javascript = [NSString stringWithFormat:@"window.scrollBy(0, %ld);", height];
     [locationWebView stringByEvaluatingJavaScriptFromString:javascript];
-    
-//    [self.webView evaluateJavaScript:hiddenCode completionHandler:^(id _Nullable result, NSError * _Nullable error) {
-//
-//        [self.webView evaluateJavaScript:@"document.body.offsetHeight;" completionHandler:^(id _Nullable height, NSError * _Nullable error) {
-//
-//            NSString* javascript = [NSString stringWithFormat:@"window.scrollBy(0, %ld);", [height integerValue]];
-//            [self.webView evaluateJavaScript:javascript completionHandler:^(id _Nullable resutl, NSError * _Nullable error) {
-//            }];
-//        }];
-//    }];
 }
 
-/*
-#pragma mark - Navigation
-
-// In a storyboard-based application, you will often want to do a little preparation before navigation
-- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
-    // Get the new view controller using [segue destinationViewController].
-    // Pass the selected object to the new view controller.
+- (void)testLoadViewExist
+{
+    //ipo-Fixture_CompetitorName ipo-CompetitionBase
+    NSString * js = @"function test2 (){var e =$('.ipo-Fixture_CompetitorName');if(e.length > 0){return 'OK';} return 'NO'}  test2()";
+    NSString * result = [locationWebView stringByEvaluatingJavaScriptFromString:js];
+    if ([result isEqualToString:@"OK"])
+    {
+        [self searchMatch];
+    }
+    else
+    {
+        [self performSelector:@selector(testLoadViewExist) withObject:nil afterDelay:1/30.0f];
+    }
 }
-*/
-
 @end
